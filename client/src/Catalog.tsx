@@ -1,6 +1,5 @@
 import { Fragment, useEffect, useState } from "react";
 import { Product } from "./products";
-import { Avatar, Button, List, ListItem, ListItemAvatar, ListItemText } from "@mui/material";
 import ProductList from "./ProductList";
 
 

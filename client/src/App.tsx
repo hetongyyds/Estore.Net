@@ -3,6 +3,7 @@ import { Product } from "./products";
 import Catalog from "./Catalog";
 import { Container, CssBaseline, ThemeProvider, Typography, createTheme, getCircularProgressUtilityClass } from "@mui/material";
 import Header from "./Header";
+import { Outlet } from "react-router-dom";
 
 
 
@@ -33,7 +34,7 @@ function App() {
         <CssBaseline></CssBaseline>
         <Header darkMode = {darkMode} handleThemeChange = {handleThemeChange}></Header>
         <Container>
-          <Catalog></Catalog>
+          <Outlet></Outlet>
 
         </Container>
       

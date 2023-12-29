@@ -1,5 +1,7 @@
 
 using API.Data;
+using API.Entity;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 
@@ -18,6 +20,14 @@ builder.Services.AddDbContext<StoreContext>(opt =>
 
 builder.Services.AddCors();
 
+builder.Services.AddIdentityCore<User>()
+.AddRoles<IdentityRole>()
+.AddEntityFrameworkStores<StoreContext>();
+
+builder.Services.AddAuthentication();
+
+builder.Services.AddAuthorization();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -30,7 +40,7 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.UseCors(opt => {
-    opt.AllowAnyHeader().AllowAnyMethod().WithOrigins("http://localhost:3000");
+    opt.AllowAnyHeader().AllowAnyMethod().AllowCredentials().WithOrigins("http://localhost:3000");
 });
 
 app.UseAuthorization();
@@ -39,12 +49,13 @@ app.MapControllers();
 
 var scope = app.Services.CreateScope();
 var context = scope.ServiceProvider.GetRequiredService<StoreContext>();
+var userManager = scope.ServiceProvider.GetRequiredService<UserManager<User>>();
 var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
 
 try
 {
-    context.Database.Migrate();
-    DbInitial.Initialize(context);
+    await context.Database.MigrateAsync();
+    await DbInitial.Initialize(context,userManager);
 }
 catch (Exception ex)
 {
